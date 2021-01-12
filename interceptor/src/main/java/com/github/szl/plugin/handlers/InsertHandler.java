@@ -60,13 +60,13 @@ public class InsertHandler extends Handler {
     Object firstEntity = entitySet.iterator().next();
     List<AutoSet> autoSetFields = getField(firstEntity);
 
-    List<String> columnList = columns.stream().map(c->c.toString()).collect(Collectors.toList());
+    List<String> columnList = columns.stream().map(c->c.toString().toLowerCase()).collect(Collectors.toList());
     Set<String> columnSet = columnList.stream().collect(Collectors.toSet());
 
     StringBuilder fieldNameStr = new StringBuilder();
     autoSetFields.stream().forEach(
         field-> {
-          if(columnSet.contains("`"+field.name()+"`")){
+          if(columnSet.contains(field.name().toLowerCase()) || columnSet.contains("`"+field.name().toLowerCase()+"`")){
             fieldCountInColumn.addAndGet(1);
           }
           else{

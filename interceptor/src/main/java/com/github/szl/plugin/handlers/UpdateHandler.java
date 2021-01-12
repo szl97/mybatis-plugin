@@ -44,20 +44,18 @@ public class UpdateHandler extends Handler {
     SQLExpr where = updateStatement.getWhere();
     SQLTableSource sqlTableSource = updateStatement.getTableSource();
     String tableName = sqlTableSource.toString();
-    for (Object o : entitySet) {
-      handle(o);
-    }
     StringBuilder newSqlColumnsSb = new StringBuilder();
     Object firstEntity = entitySet.iterator().next();
+    handle(firstEntity);
     List<AutoSet> autoSetFields = getField(firstEntity);
-    List<String> columnList = columns.stream().map(c->c.toString()).collect(Collectors.toList());
+    List<String> columnList = columns.stream().map(c->c.toString().replace(" ","").toLowerCase()).collect(Collectors.toList());
     Set<String> columnSet = columnList.stream().collect(Collectors.toSet());
     AtomicBoolean isAlreadyIncludeAllFields = new AtomicBoolean(true);
     AtomicInteger fieldCountInColumn = new AtomicInteger(0);
     StringBuilder fieldNameStr = new StringBuilder();
     autoSetFields.stream().forEach(
         field-> {
-          if(columnSet.contains("`"+field.name()+"`")){
+          if(columnSet.contains(field.name().toLowerCase()+"=?")){
             fieldCountInColumn.addAndGet(1);
           }
           else{

@@ -49,13 +49,16 @@ public class AutoSetInterceptor implements Interceptor{
     Object entity = args[1];
     BoundSql sql = mappedStatement.getBoundSql(entity);
     SqlCommandType commandType = mappedStatement.getSqlCommandType();
-    List<Object> list = getEntityList(entity);
     if("insert".equalsIgnoreCase(commandType.name())){
-        BoundSqlHelper boundSqlHelper = inserter.prepareAutoSetAndNewSql(mappedStatement, list, sql);
-        if(!boundSqlHelper.isAlreadyIncludeAllFields()){
-          ResetSqlUtil.resetSql2Invocation(invocation, boundSqlHelper, new InsertBoundSqlSqlSource(boundSqlHelper));
-        }
-    } else if("update".equalsIgnoreCase(commandType.name())){
+      List<Object> list = getEntityList(entity);
+      BoundSqlHelper boundSqlHelper = inserter.prepareAutoSetAndNewSql(mappedStatement, list, sql);
+      if(!boundSqlHelper.isAlreadyIncludeAllFields()){
+        ResetSqlUtil.resetSql2Invocation(invocation, boundSqlHelper,new InsertBoundSqlSqlSource(boundSqlHelper));
+      }
+      //直接写参数，而不是传入实体类的update方法不做处理，@autoSet不支持parameter
+    } else if("update".equalsIgnoreCase(commandType.name()) && !(entity instanceof Map)){
+      List<Object> list = new ArrayList<>();
+      list.add(entity);
       BoundSqlHelper boundSqlHelper = updater.prepareAutoSetAndNewSql(mappedStatement, list, sql);
       if(!boundSqlHelper.isAlreadyIncludeAllFields()){
         ResetSqlUtil.resetSql2Invocation(invocation, boundSqlHelper, new UpdateBoundSqlSqlSource(boundSqlHelper));
