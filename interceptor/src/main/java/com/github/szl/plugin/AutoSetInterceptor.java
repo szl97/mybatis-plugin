@@ -170,7 +170,7 @@ public class AutoSetInterceptor implements Interceptor{
      */
     private int getInsertBatchKeyIndex(String prop){
       String prefix = StringUtils.substring(prop,0, StringUtils.lastIndexOf(prop, Constant.INSERT_BATCH_KEY_SPILT));
-      String insertBatchKeyIndex = StringUtils.substring(prefix,prefix.length()-1,prefix.length());
+      String insertBatchKeyIndex = StringUtils.substring(prefix,prefix.lastIndexOf(Constant.BATCH_INSERT_SEQ_SPLIT)+1,prefix.length());
       return Integer.valueOf(insertBatchKeyIndex);
     }
   }

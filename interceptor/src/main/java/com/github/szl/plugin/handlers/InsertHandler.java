@@ -92,7 +92,14 @@ public class InsertHandler extends Handler {
 
     //构造出 insert into table （column1，column2，...）values
     StringBuilder newSqlPrefixSb = new StringBuilder();
-    newSqlPrefixSb.append("insert into ").append(tableName).append("(").append(newSqlColumnsSb).append(") ").append("values ");
+    String[] sqls = boundSql.getSql().split(" ");
+    for(String s : sqls){
+      if(s.equals(tableName)){
+        break;
+      }
+      newSqlPrefixSb.append(s+" ");
+    }
+    newSqlPrefixSb.append(tableName).append("(").append(newSqlColumnsSb).append(") ").append("values ");
 
     //构造占位符，形如(?,?,?)
     String newSqlValuePlaceholder = StringUtils.repeat("?,",columns.size() + autoSetFields.size() - fieldCountInColumn.get() - 1);
