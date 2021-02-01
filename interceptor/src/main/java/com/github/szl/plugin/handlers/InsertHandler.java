@@ -94,10 +94,11 @@ public class InsertHandler extends Handler {
     StringBuilder newSqlPrefixSb = new StringBuilder();
     String[] sqls = boundSql.getSql().split(" ");
     for(String s : sqls){
-      if(s.equals(tableName)){
+      String p = s.trim();
+      if(p.equals(tableName)){
         break;
       }
-      newSqlPrefixSb.append(s+" ");
+      newSqlPrefixSb.append(p+" ");
     }
     newSqlPrefixSb.append(tableName).append("(").append(newSqlColumnsSb).append(") ").append("values ");
 
